@@ -8,18 +8,16 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-export default function LoginScreen({ navigation }) {
+export default function SignUpScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Hi! Welcome</Text>
+      <Text style={styles.title}>Create New Account</Text>
+      <TextInput style={styles.input} placeholder="Full Name" />
       <TextInput style={styles.input} placeholder="Email Address" />
       <TextInput style={styles.input} placeholder="Password" secureTextEntry />
-      <Button
-        title="Log In"
-        onPress={() => navigation.navigate("ChoosePlayers")}
-      />
-      <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-        <Text style={styles.link}>Don't have an account? Sign up</Text>
+      <Button title="Register" onPress={() => navigation.navigate("Login")} />
+      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+        <Text style={styles.link}>Already have an account? Sign in</Text>
       </TouchableOpacity>
     </View>
   );

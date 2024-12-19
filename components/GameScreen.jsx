@@ -1,23 +1,23 @@
-import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import React, { useState } from "react";
+import { View, Text, Button, StyleSheet } from "react-native";
 
-const choices = ['Gunting', 'Batu', 'Kertas'];
+const choices = ["Scissors", "Rock", "Paper"];
 
 const getResult = (userChoice, botChoice) => {
-  if (userChoice === botChoice) return 'Seri';
+  if (userChoice === botChoice) return "Draw";
   if (
-    (userChoice === 'Gunting' && botChoice === 'Kertas') ||
-    (userChoice === 'Batu' && botChoice === 'Gunting') ||
-    (userChoice === 'Kertas' && botChoice === 'Batu')
+    (userChoice === "Scissors" && botChoice === "Paper") ||
+    (userChoice === "Rock" && botChoice === "Scissors") ||
+    (userChoice === "Paper" && botChoice === "Rock")
   )
-    return 'Menang';
-  return 'Kalah';
+    return "Win";
+  return "Lose";
 };
 
 const GameScreen = () => {
-  const [userChoice, setUserChoice] = useState('');
-  const [botChoice, setBotChoice] = useState('');
-  const [result, setResult] = useState('');
+  const [userChoice, setUserChoice] = useState("");
+  const [botChoice, setBotChoice] = useState("");
+  const [result, setResult] = useState("");
 
   const playGame = (choice) => {
     const botRandomChoice = choices[Math.floor(Math.random() * choices.length)];
@@ -28,17 +28,21 @@ const GameScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Permainan Gunting, Batu, Kertas</Text>
+      <Text style={styles.title}>Scissors, Rock, Paper Game</Text>
       <View style={styles.buttonContainer}>
         {choices.map((choice) => (
-          <Button key={choice} title={choice} onPress={() => playGame(choice)} />
+          <Button
+            key={choice}
+            title={choice}
+            onPress={() => playGame(choice)}
+          />
         ))}
       </View>
-      {userChoice !== '' && (
+      {userChoice !== "" && (
         <View style={styles.resultContainer}>
-          <Text>Kamu: {userChoice}</Text>
+          <Text>You: {userChoice}</Text>
           <Text>Bot: {botChoice}</Text>
-          <Text style={styles.result}>Hasil: {result}</Text>
+          <Text style={styles.result}>Result: {result}</Text>
         </View>
       )}
     </View>
@@ -46,11 +50,11 @@ const GameScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 20 },
-  title: { fontSize: 24, marginBottom: 20, textAlign: 'center' },
-  buttonContainer: { flexDirection: 'row', justifyContent: 'space-around' },
-  resultContainer: { marginTop: 30, alignItems: 'center' },
-  result: { fontSize: 20, fontWeight: 'bold', marginTop: 10 },
+  container: { flex: 1, justifyContent: "center", padding: 20 },
+  title: { fontSize: 24, marginBottom: 20, textAlign: "center" },
+  buttonContainer: { flexDirection: "row", justifyContent: "space-around" },
+  resultContainer: { marginTop: 30, alignItems: "center" },
+  result: { fontSize: 20, fontWeight: "bold", marginTop: 10 },
 });
 
 export default GameScreen;
