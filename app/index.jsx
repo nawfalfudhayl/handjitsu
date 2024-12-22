@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
+import { Link } from "expo-router";
 
 export default function LoginScreen({ navigation }) {
   return (
@@ -21,6 +22,8 @@ export default function LoginScreen({ navigation }) {
       <TouchableOpacity onPress={() => navigation.navigate("RegisterScreen")}>
         <Text style={styles.link}>Don't have an account? Sign up</Text>
       </TouchableOpacity>
+      <Link href="/register" style={styles.registerLink}>Register Here</Link>
+      <Link href="/home" style={styles.registerLink}>Home Here</Link>
     </View>
   );
 }
