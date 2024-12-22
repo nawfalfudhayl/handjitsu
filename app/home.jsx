@@ -1,21 +1,25 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Image, Text } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { View, StyleSheet, TouchableOpacity, ImageBackground, Image, Text } from 'react-native';
 
 const MainMenuScreen = ({ navigation }) => {
   return (
-    <LinearGradient
-      colors={['#4c669f', '#3b5998', '#192f6a']} // Ganti dengan warna gradasi yang Anda inginkan
-      style={styles.background}
-    >
+    <ImageBackground source={require('../assets/images/homescreen_bg.png')} style={styles.background}>
       <View style={styles.container}>
         <Image source={require('../assets/images/title.png')} style={styles.titleImage} />
         <Image source={require('../assets/images/icon-title.png')} style={styles.icons} />
-        <TouchableOpacity style={styles.singlePlayerButton} onPress={() => navigation.navigate('SinglePlayer')}>
-          <Text style={styles.buttonText}>Single Player</Text>
-        </TouchableOpacity>
+        <View>
+          <TouchableOpacity style={styles.button}>
+            <Image source={require('../assets/images/button_singleplayer.png')} style={styles.buttonImage} resizeMode="contain" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button}>
+            <Image source={require('../assets/images/button_multiplayer.png')} style={styles.buttonImage} resizeMode="contain" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button}>
+            <Image source={require('../assets/images/button_leaderboard.png')} style={styles.buttonImage} resizeMode="contain" />
+          </TouchableOpacity>
+        </View>
       </View>
-    </LinearGradient>
+    </ImageBackground>
   );
 };
 
@@ -24,6 +28,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'purple',
   },
   container: {
     flex: 1,
@@ -44,20 +49,12 @@ const styles = StyleSheet.create({
     height: 253,
     marginHorizontal: 10,
   },
-  singlePlayerButton: {
-    backgroundColor: 'yellow',
+  button: {
+    marginBottom: 16, // Menambahkan margin bawah untuk memberikan jarak
+  },
+  buttonImage: {
     width: 348,
     height: 65.5,
-    borderRadius: 10,
-    marginBottom: 10,
-    alignItems: 'center',
-  },
-  multiplayerButton: {
-    backgroundColor: 'purple',
-    padding: 15,
-    borderRadius: 10,
-    width: '80%',
-    alignItems: 'center',
   },
   buttonText: {
     fontSize: 18,
