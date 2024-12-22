@@ -1,10 +1,13 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, ImageBackground, Image, Text } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Image, Text } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 const MainMenuScreen = ({ navigation }) => {
   return (
-    <ImageBackground source={require('../assets/images/background.png')} style={styles.background}>
+    <LinearGradient
+      colors={['#4c669f', '#3b5998', '#192f6a']} // Ganti dengan warna gradasi yang Anda inginkan
+      style={styles.background}
+    >
       <View style={styles.container}>
         <Image source={require('../assets/images/title.png')} style={styles.titleImage} />
         <Image source={require('../assets/images/icon-title.png')} style={styles.icons} />
@@ -12,7 +15,7 @@ const MainMenuScreen = ({ navigation }) => {
           <Text style={styles.buttonText}>Single Player</Text>
         </TouchableOpacity>
       </View>
-    </ImageBackground>
+    </LinearGradient>
   );
 };
 
@@ -21,7 +24,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'purple'
   },
   container: {
     flex: 1,
@@ -45,7 +47,7 @@ const styles = StyleSheet.create({
   singlePlayerButton: {
     backgroundColor: 'yellow',
     width: 348,
-    heigth: 65.5,
+    height: 65.5,
     borderRadius: 10,
     marginBottom: 10,
     alignItems: 'center',
