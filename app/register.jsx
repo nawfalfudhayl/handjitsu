@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } fro
 import { Link } from 'expo-router';
 import { z } from 'zod';
 import axios from 'axios';
+import { StatusBar } from 'expo-status-bar';
 
 const RegisterScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -12,7 +13,7 @@ const RegisterScreen = ({ navigation }) => {
 
   const RegisterSchema = z.object({
     email: z.string().email({ message: "Invalid email address" }),
-    password: z.string().min(5, { message: "Must be 5 or more characters long" }),
+    password: z.string().min(6, { message: "Must be 6 or more characters long" }),
   });
 
   const handleInputChange = (key, value) => {
@@ -101,6 +102,7 @@ const RegisterScreen = ({ navigation }) => {
           <Link href="/" style={styles.loginText}>Login here</Link>
         </View>
       </View>
+      <StatusBar style="auto" />
     </View>
   );
 };
