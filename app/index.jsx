@@ -32,13 +32,13 @@ export default function LoginPage() {
       LoginSchema.parse(form);
 
       const res = await axios.post(
-        "https://walled-api-two.vercel.app/auth/login",
+        "https://handjitsu-api.vercel.app/auth/login",
         form
       );
       await AsyncStorage.setItem("token", res.data.data.token);
 
       if (res.status === 200) {
-        router.replace("/home"); // Arahkan ke halaman home setelah login berhasil
+        router.replace("/(home)"); // Arahkan ke halaman home setelah login berhasil
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {

@@ -1,24 +1,24 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, ImageBackground, Image, Text } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { Link } from 'expo-router';
 
 const MainMenuScreen = ({ navigation }) => {
   return (
-    <ImageBackground source={require('../assets/images/homescreen_bg.png')} style={styles.background}>
+    <ImageBackground source={require('../../assets/images/homescreen_bg.png')} style={styles.background}>
       <View style={styles.container}>
-        <Image source={require('../assets/images/title.png')} style={styles.titleImage} />
-        <Image source={require('../assets/images/logo_HandJitsu.png')} style={styles.icons} />
+        <Image source={require('../../assets/images/title.png')} style={styles.titleImage} />
+        <Image source={require('../../assets/images/logo_HandJitsu.png')} style={styles.icons} />
         <View>
+          <Link href = "/GameScreen" style={styles.button}>
+            <Image source={require('../../assets/images/button_singleplayer.png')} style={styles.buttonImage} resizeMode="contain" />
+          </Link>
           <TouchableOpacity style={styles.button}>
-            <Image source={require('../assets/images/button_singleplayer.png')} style={styles.buttonImage} resizeMode="contain" />
-            <Link href="/Leaderboard"></Link>
+            <Image source={require('../../assets/images/button_multiplayer.png')} style={styles.buttonImage} resizeMode="contain" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Image source={require('../assets/images/button_multiplayer.png')} style={styles.buttonImage} resizeMode="contain" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Image source={require('../assets/images/button_leaderboard.png')} style={styles.buttonImage} resizeMode="contain" />
-          </TouchableOpacity>
+          <Link href="/Leaderboard" style={styles.button}>
+            <Image source={require('../../assets/images/button_leaderboard.png')} style={styles.buttonImage} resizeMode="contain" />
+          </Link>
         </View>
       </View>
       <StatusBar style="auto" />
@@ -40,8 +40,8 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   titleImage: {
-    width: 299, // Atur sesuai ukuran gambar
-    height: 92, // Atur sesuai ukuran gambar
+    width: 299,
+    height: 92, 
     marginBottom: 20,
   },
   icons: {
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   button: {
-    marginBottom: 16, // Menambahkan margin bawah untuk memberikan jarak
+    marginBottom: 16,
   },
   buttonImage: {
     width: 348,

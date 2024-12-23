@@ -35,22 +35,22 @@ const GameScreen = () => {
   };
 
   return (
-    <ImageBackground source={require('../assets/images/spaceroom_bg.png')} style={styles.background}>
+    <ImageBackground source={require('../../assets/images/spaceroom_bg.png')} style={styles.background}>
       <View style={styles.container}>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={() => playGame("Rock")} style={styles.choiceButton}>
-            <Image source={require('../assets/images/button_rock.png')} style={styles.choiceImage} />
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={() => playGame("Rock")} style={styles.choiceButton}>
+              <Image source={require('../../assets/images/button_rock.png')} style={styles.choiceImage} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => playGame("Paper")} style={styles.choiceButton}>
+              <Image source={require('../../assets/images/button_paper.png')} style={styles.choiceImage} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => playGame("Scissors")} style={styles.choiceButton}>
+              <Image source={require('../../assets/images/button_scissors.png')} style={styles.choiceImage} />
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity onPress={displayResult} style={styles.resultButton}>
+            <Image source={require('../../assets/images/button_result_active.png')} style={styles.resultButtonImage} resizeMode="contain" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => playGame("Paper")} style={styles.choiceButton}>
-            <Image source={require('../assets/images/button_paper.png')} style={styles.choiceImage} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => playGame("Scissors")} style={styles.choiceButton}>
-            <Image source={require('../assets/images/button_scissors.png')} style={styles.choiceImage} />
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity onPress={displayResult} style={styles.resultButton}>
-          <Text style={styles.resultButtonText}>Show Result</Text>
-        </TouchableOpacity>
         {showResult && (
           <View style={styles.resultContainer}>
             <Text style={styles.resultText}>You: {userChoice}</Text>
@@ -70,31 +70,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  backButton: {
-    position: "absolute",
-    top: 20,
-    left: 20,
-    zIndex: 1,
-  },
-  backIcon: {
-    width: 30,
-    height: 30,
-  },
   container: { 
     flex: 1, 
     justifyContent: "center", 
     alignItems: "center",
     padding: 20 
-  },
-  topHandImage: { 
-    width: 150, 
-    height: 150,
-    marginBottom: 20,
-  },
-  bottomHandImage: { 
-    width: 150, 
-    height: 150,
-    marginTop: 20,
   },
   buttonContainer: { 
     flexDirection: "row", 
@@ -114,12 +94,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: "#ddd",
     borderRadius: 10,
   },
-  resultButtonText: { 
-    fontSize: 18,
-    fontWeight: "bold",
+  resultButtonImage: { 
+    width: 348,
+    height: 65.5,
   },
   resultContainer: { 
     marginTop: 20,

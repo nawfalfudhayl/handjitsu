@@ -4,6 +4,7 @@ import { Link } from 'expo-router';
 import { z } from 'zod';
 import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
+import { router } from 'expo-router';
 
 const RegisterScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -37,11 +38,10 @@ const RegisterScreen = ({ navigation }) => {
     }
 
     try {
-      const response = await axios.post("https://walled-api-sigma.vercel.app/auth/register", {
+      const response = await axios.post("https://handjitsu-api.vercel.app/auth/register", {
         username: username,
         email: form.email,
         password: form.password,
-        fullname: "123"
       });
 
       Alert.alert("Sukses", "Pendaftaran berhasil! Silakan login.");
@@ -50,9 +50,9 @@ const RegisterScreen = ({ navigation }) => {
       if (error.response) {
         Alert.alert("Gagal", `Pendaftaran gagal: ${error.response.data.error}`);
       } 
-      // else {
-      //   Alert.alert("Gagal", "Terjadi kesalahan jaringan. Silakan coba lagi.");
-      // }
+      else {
+        Alert.alert("Gagal", "Terjadi kesalahan jaringan. Silakan coba lagi.");
+      }
     } finally {
       setIsRegistering(false);
     }

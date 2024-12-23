@@ -14,11 +14,11 @@ const LeaderboardScreen = () => {
   const renderItem = ({ item, index }) => {
     let trophyIcon;
     if (index === 0) {
-      trophyIcon = require("../assets/images/gold_medal.png");
+      trophyIcon = require("../../assets/images/gold_medal.png");
     } else if (index === 1) {
-      trophyIcon = require("../assets/images/silver_medal.png");
+      trophyIcon = require("../../assets/images/silver_medal.png");
     } else if (index === 2) {
-      trophyIcon = require("../assets/images/bronze_medal.png");
+      trophyIcon = require("../../assets/images/bronze_medal.png");
     }
 
     return (
