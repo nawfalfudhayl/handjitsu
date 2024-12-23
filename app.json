@@ -7,9 +7,13 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/onboarding_bg.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#8376E5"
+      "image": "./assets/images/logoSplash.png",
+      "resizeMode": "contain",
+      
+      "width": 800, 
+      "height": 800,
+    "foregroundImage":"./assets/images/background.png",
+    "backgroundColor": "#8376E5"
     },
     "ios": {
       "supportsTablet": true
