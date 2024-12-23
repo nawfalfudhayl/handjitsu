@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, FlatList, Image } from "react-native";
+import { View, Text, StyleSheet, FlatList, Image, ImageBackground } from "react-native";
 
 const leaderboardData = [
   { id: "1", name: "Fulan 1", wins: 10 },
@@ -22,16 +22,18 @@ const LeaderboardScreen = () => {
     }
 
     return (
-      <View style={[styles.leaderboardItem, index === 0 && styles.firstPlace]}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarText}>{item.name.charAt(0)}</Text>
+      <ImageBackground source={require('../../assets/images/spaceroom_bg.png')} style={styles.background}>
+        <View style={[styles.leaderboardItem, index === 0 && styles.firstPlace]}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>{item.name.charAt(0)}</Text>
+          </View>
+          <View style={styles.info}>
+            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.wins}>Wins: {item.wins}</Text>
+          </View>
+          {trophyIcon && <Image source={trophyIcon} style={styles.trophyIcon} />}
         </View>
-        <View style={styles.info}>
-          <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.wins}>Wins: {item.wins}</Text>
-        </View>
-        {trophyIcon && <Image source={trophyIcon} style={styles.trophyIcon} />}
-      </View>
+        </ImageBackground>
     );
   };
 

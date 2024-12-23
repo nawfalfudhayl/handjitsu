@@ -108,7 +108,7 @@ export default function LoginPage() {
             Register here
           </Link>
         </Text>
-        <StatusBar style="auto" hidden />
+        <StatusBar style="auto" />
       </View>
     </View>
   );
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   link: {
-    color: "#19918F",
+    color: "#6A5AE0",
   },
   errorMsg: {
     color: "red",
@@ -155,5 +155,8 @@ const styles = StyleSheet.create({
   button: {
     width: 348,
     height: 65.5,
+  },
+  linkText: {
+    marginTop: 16
   }
 });
