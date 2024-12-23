@@ -11,6 +11,7 @@ const MainMenuScreen = ({ navigation }) => {
         <View>
           <TouchableOpacity style={styles.button}>
             <Image source={require('../assets/images/button_singleplayer.png')} style={styles.buttonImage} resizeMode="contain" />
+            <Link href="/Leaderboard"></Link>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button}>
             <Image source={require('../assets/images/button_multiplayer.png')} style={styles.buttonImage} resizeMode="contain" />
