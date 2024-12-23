@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
+    width: '100%',
   },
   titleImage: {
     width: 299,
@@ -65,6 +66,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'black',
   },
+  signout: {
+    alignItems: 'flex-end'
+  }
 });
 
 export default MainMenuScreen;
