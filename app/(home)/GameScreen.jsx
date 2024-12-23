@@ -4,16 +4,16 @@ import { useRouter } from "expo-router";
 
 const choices = ["Scissors", "Rock", "Paper"];
 
-const getResult = (userChoice, botChoice) => {
-  if (userChoice === botChoice) return "Draw";
-  if (
-    (userChoice === "Scissors" && botChoice === "Paper") ||
-    (userChoice === "Rock" && botChoice === "Scissors") ||
-    (userChoice === "Paper" && botChoice === "Rock")
-  )
-    return "Win";
-  return "Lose";
-};
+// const getResult = (userChoice, botChoice) => {
+//   if (userChoice === botChoice) return "Draw";
+//   if (
+//     (userChoice === "Scissors" && botChoice === "Paper") ||
+//     (userChoice === "Rock" && botChoice === "Scissors") ||
+//     (userChoice === "Paper" && botChoice === "Rock")
+//   )
+//     return "Win";
+//   return "Lose";
+// };
 
 const GameScreen = () => {
   const [userChoice, setUserChoice] = useState("");
