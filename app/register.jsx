@@ -26,9 +26,8 @@ const RegisterScreen = ({ navigation }) => {
     }
   };
 
-  // Fungsi untuk mengirim data registrasi ke API
   const handleRegister = async () => {
-    if (isRegistering) return; // Mencegah multiple request
+    if (isRegistering) return; 
     setIsRegistering(true);
     
     if (!username || !form.email || !form.password) {
@@ -50,9 +49,10 @@ const RegisterScreen = ({ navigation }) => {
     } catch (error) {
       if (error.response) {
         Alert.alert("Gagal", `Pendaftaran gagal: ${error.response.data.error}`);
-      } else {
-        Alert.alert("Gagal", "Terjadi kesalahan jaringan. Silakan coba lagi.");
-      }
+      } 
+      // else {
+      //   Alert.alert("Gagal", "Terjadi kesalahan jaringan. Silakan coba lagi.");
+      // }
     } finally {
       setIsRegistering(false);
     }
@@ -92,7 +92,7 @@ const RegisterScreen = ({ navigation }) => {
       <View style={styles.register}>
         <TouchableOpacity onPress={handleRegister}>
           <Image
-            source={require('../assets/images/Button.png')}
+            source={require('../assets/images/button_register.png')}
             style={styles.buttonImage}
             resizeMode="contain"
           />
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   errorMsg: {
     color: 'red',
     fontSize: 12,
-    marginBottom: 10, // Menambahkan margin bawah pada pesan error
+    marginBottom: 10,
   },
 });
 

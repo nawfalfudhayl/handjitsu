@@ -7,7 +7,7 @@ const MainMenuScreen = ({ navigation }) => {
     <ImageBackground source={require('../assets/images/homescreen_bg.png')} style={styles.background}>
       <View style={styles.container}>
         <Image source={require('../assets/images/title.png')} style={styles.titleImage} />
-        <Image source={require('../assets/images/icon-title.png')} style={styles.icons} />
+        <Image source={require('../assets/images/logo_HandJitsu.png')} style={styles.icons} />
         <View>
           <TouchableOpacity style={styles.button}>
             <Image source={require('../assets/images/button_singleplayer.png')} style={styles.buttonImage} resizeMode="contain" />
