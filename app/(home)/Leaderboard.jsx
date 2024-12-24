@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, ImageBackground } from 'react-native';
 import axios from 'axios';
 
 const LeaderboardScreen = () => {
@@ -30,12 +30,12 @@ const LeaderboardScreen = () => {
 
     return (
       <View style={[styles.leaderboardItem, index === 0 && styles.firstPlace]}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarText}>{index + 1}</Text>
+        <View style={styles.rank}>
+          <Text style={styles.rankText}>{index + 1}</Text>
         </View>
         <View style={styles.info}>
           <Text style={styles.name}>User {item.user_id}</Text>
-          <Text style={styles.wins}>Winrate: {item.winrate}</Text>
+          <Text style={styles.wins}>{item.winrate} wins</Text>
         </View>
         {trophyIcon && <Image source={trophyIcon} style={styles.trophyIcon} />}
       </View>
@@ -43,25 +43,35 @@ const LeaderboardScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Leaderboard</Text>
-      <FlatList data={leaderboardData} renderItem={renderItem} keyExtractor={(item) => item.leaderboard_id} contentContainerStyle={styles.listContainer} />
-    </View>
+    <ImageBackground
+      source={require('../../assets/images/leaderboard_bg.png')}
+      style={styles.background}
+    >
+      <Text style={styles.title}>Leaderboard HandJitsu</Text>
+      <FlatList
+        data={leaderboardData}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.leaderboard_id}
+        contentContainerStyle={styles.listContainer}
+        style={styles.leaderboard}
+      />
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    padding: 20,
+    resizeMode: 'cover',
+    paddingHorizontal: 20,
+    paddingVertical: 40,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
-    color: '#4F4F4F',
+    color: '#FFFFFF',
   },
   listContainer: {
     paddingBottom: 20,
@@ -72,28 +82,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     padding: 15,
     marginBottom: 10,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 5 },
+    borderRadius: 12,
   },
   firstPlace: {
+    borderWidth: 2,
     borderColor: '#FFD700',
   },
-  avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+  rank: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: '#6C63FF',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 15,
   },
-  avatarText: {
+  rankText: {
     color: '#FFFFFF',
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 16,
   },
   info: {
     flex: 1,
@@ -101,7 +108,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333333',
+    color: '#4F4F4F',
   },
   wins: {
     fontSize: 14,
@@ -112,6 +119,11 @@ const styles = StyleSheet.create({
     height: 30,
     resizeMode: 'contain',
   },
+  leaderboard: {
+    backgroundColor: 'EFEEFC',
+    borderRadius: 20,
+    padding: 16
+  }
 });
 
 export default LeaderboardScreen;
