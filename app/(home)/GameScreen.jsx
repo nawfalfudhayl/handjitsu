@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet, ImageBackground } from "react-native";
+import { View, Text, Image, TouchableOpacity, StyleSheet, ImageBackground, Modal } from "react-native";
+import { router, useRouter } from "expo-router";
 
 const choices = ["Scissors", "Rock", "Paper"];
 
@@ -28,9 +29,12 @@ const getResult = (userChoice, botChoice) => {
 
 const GameScreen = () => {
   const [userChoice, setUserChoice] = useState("");
-  const [botChoice, setBotChoice] = useState("");
-  const [result, setResult] = useState("");
-  const [showResult, setShowResult] = useState(false);
+    const [botChoice, setBotChoice] = useState("");
+    const [result, setResult] = useState("");
+    const [showResult, setShowResult] = useState(false);
+    const [loseModalVisible, setLoseModalVisible] = useState(false);
+    const [winModalVisible, setWinModalVisible] = useState(false);
+    const router = useRouter();
 
   const playGame = (choice) => {
     setUserChoice(choice);
@@ -41,8 +45,14 @@ const GameScreen = () => {
   const displayResult = () => {
     const botRandomChoice = choices[Math.floor(Math.random() * choices.length)];
     setBotChoice(botRandomChoice);
-    setResult(getResult(userChoice, botChoice));
+    const gameResult = getResult(userChoice, botRandomChoice);
+    setResult(gameResult);
     setShowResult(true);
+    if (gameResult === "Lose") {
+      setLoseModalVisible(true);
+    } else if (gameResult === "Win") {
+      setWinModalVisible(true);
+    }
   };
 
   return (
@@ -66,15 +76,105 @@ const GameScreen = () => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity onPress={displayResult} style={styles.resultButton}>
-          <Image source={require('../../assets/images/button_result_active.png')} style={styles.resultButtonImage} resizeMode="contain" />
-        </TouchableOpacity>
+        <TouchableOpacity
+           onPress={userChoice ? displayResult : null}
+          style={styles.resultButton}
+           >
+            <Image
+                source={
+                 userChoice
+                    ? require("../../assets/images/button_result_active.png")
+                    : require("../../assets/images/button_result_disabled.png")
+                }
+              style={styles.resultButtonImage}
+            />
+            </TouchableOpacity>
 
-        {showResult && (
-          <View style={styles.resultContainer}>
-            <Text style={styles.resultText}>Result: {result}</Text>
-          </View>
-        )}
+        {/* Lose Modal */}
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={loseModalVisible}
+                onRequestClose={() => {
+                  setLoseModalVisible(!loseModalVisible);
+                }}
+              >
+                <View style={styles.modalView}>
+                  <Text style={styles.modalText}>
+                    Nice try! Let's see if you can beat it next time!
+                  </Text>
+                  <Image
+                    source={require("../../assets/images/emoji_lose.png")}
+                    style={styles.modalImage}
+                  />
+                  <View style={styles.modalButtonsContainer}>
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={() => {
+                        setLoseModalVisible(!loseModalVisible);
+                        setShowResult(false);
+                        setUserChoice("");
+                      }}
+                    >
+                      <Image
+                        source={require("../../assets/images/button_tryagain.png")}
+                        style={styles.buttonImageLarge}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={() => router.push("/mainmenu")}
+                    >
+                      <Image
+                        source={require("../../assets/images/button_mainmenu.png")}
+                        style={styles.buttonImageLarge}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
+        
+              {/* Win Modal */}
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={winModalVisible}
+                onRequestClose={() => {
+                  setWinModalVisible(!winModalVisible);
+                }}
+              >
+                <View style={styles.modalView}>
+                  <Text style={styles.modalText}>Hooray! Victory is yours!</Text>
+                  <Image
+                    source={require("../../assets/images/emoji_win.png")}
+                    style={styles.modalImage}
+                  />
+                  <View style={styles.modalButtonsContainer}>
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={() => {
+                        setWinModalVisible(!winModalVisible);
+                        setShowResult(false);
+                        setUserChoice("");
+                      }}
+                    >
+                      <Image
+                        source={require("../../assets/images/button_tryagain.png")}
+                        style={styles.buttonImageLarge}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={() => router.push("/mainmenu")}
+                    >
+                      <Image
+                        source={require("../../assets/images/button_mainmenu.png")}
+                        style={styles.buttonImageLarge}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
       </View>
     </ImageBackground>
   );
@@ -132,10 +232,47 @@ const styles = StyleSheet.create({
   resultContainer: { 
     alignItems: "center",
   },
-  resultText: { 
-    fontSize: 20, 
-    fontWeight: "bold",
-    marginTop: 10,
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  modalImage: {
+    width: 80,
+    height: 80,
+    resizeMode: "contain",
+  },
+  modalButtonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    paddingHorizontal: 20,
+    marginTop: 20,
+  },
+  button: {
+    flex: 1,
+    marginHorizontal: 10,
+  },
+  buttonImage: {
+    width: "100%",
+    height: 60,
+    resizeMode: "contain",
+  },
+  buttonImageLarge: {
+    width: "100%",
+    height: 80,
+    resizeMode: "contain",
   },
 });
 
