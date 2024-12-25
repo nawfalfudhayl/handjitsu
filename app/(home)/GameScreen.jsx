@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, ImageBackground, Modal } from "react-native";
 import { router, useRouter } from "expo-router";
+import axios from "axios";
 
 const choices = ["Scissors", "Rock", "Paper"];
 
@@ -16,6 +17,26 @@ const imagesBot = {
   Scissors: require('../../assets/images/hand-gesture-scissors.png'),
 };
 
+const sendUserChoice = async (choice) => {
+  try {
+    const response = await axios.put(
+      "https://handjitsu-api.vercel.app/games/16",
+      { Player1_choice: choice },
+      {
+        headers: {
+          "Content-Type":"application/json", 
+        },
+      }
+    );
+
+    console.log("API Response:", response.data);
+    return response.data;
+  } catch (error){
+      console.error("error connecting to API:", error);
+      return null;
+    }
+};
+
 const getResult = (userChoice, botChoice) => {
   if (userChoice === botChoice) return "Draw";
   if (
@@ -28,18 +49,30 @@ const getResult = (userChoice, botChoice) => {
 };
 
 const GameScreen = () => {
-  const [userChoice, setUserChoice] = useState("");
+    const [userChoice, setUserChoice] = useState("");
     const [botChoice, setBotChoice] = useState("");
     const [result, setResult] = useState("");
     const [showResult, setShowResult] = useState(false);
     const [loseModalVisible, setLoseModalVisible] = useState(false);
     const [winModalVisible, setWinModalVisible] = useState(false);
+    const [drawModalVisible, setDrawModalVisible] = useState(false);
     const router = useRouter();
 
-  const playGame = (choice) => {
+  const playGame = async (choice) => {
     setUserChoice(choice);
-    setBotChoice("");
-    setShowResult(false);
+
+    try {
+      const apiResponse = await sendUserChoice(choice);
+
+      if (apiResponse){
+        const Player1_choice = apiResponse.Player1_choice;
+        setBotChoice("Waiting for bot response...");
+        setResult(`Player 1 chose: ${Player1_choice}`);
+        setShowResult(true);
+      }
+    } catch (error) {
+      console.error("Error in playgame:", error);
+    }
   };
 
   const displayResult = () => {
@@ -52,6 +85,8 @@ const GameScreen = () => {
       setLoseModalVisible(true);
     } else if (gameResult === "Win") {
       setWinModalVisible(true);
+    } else if (gameResult === "Draw"){
+      setDrawModalVisible(true);
     }
   };
 
@@ -91,90 +126,147 @@ const GameScreen = () => {
             </TouchableOpacity>
 
         {/* Lose Modal */}
-              <Modal
-                animationType="slide"
-                transparent={true}
-                visible={loseModalVisible}
-                onRequestClose={() => {
-                  setLoseModalVisible(!loseModalVisible);
-                }}
-              >
-                <View style={styles.modalView}>
-                  <Text style={styles.modalText}>
-                    Nice try! Let's see if you can beat it next time!
-                  </Text>
-                  <Image
-                    source={require("../../assets/images/emoji_lose.png")}
-                    style={styles.modalImage}
-                  />
-                  <View style={styles.modalButtonsContainer}>
-                    <TouchableOpacity
-                      style={styles.button}
-                      onPress={() => {
-                        setLoseModalVisible(!loseModalVisible);
-                        setShowResult(false);
-                        setUserChoice("");
-                      }}
-                    >
-                      <Image
-                        source={require("../../assets/images/button_tryagain.png")}
-                        style={styles.buttonImageLarge}
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.button}
-                      onPress={() => router.push("/mainmenu")}
-                    >
-                      <Image
-                        source={require("../../assets/images/button_mainmenu.png")}
-                        style={styles.buttonImageLarge}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </Modal>
+        <Modal
+        animationType="slide"
+        transparent={true}
+        visible={loseModalVisible}
+        onRequestClose={() => {
+          setLoseModalVisible(!loseModalVisible);
+        }}
+      >
+        <View style={styles.modalView}>
+          <Text style={styles.modalText}>
+            Nice try! Let's see if you can beat it next time!
+          </Text>
+          <Image
+            source={require("../../assets/images/emoji_lose.png")}
+            style={styles.modalImage}
+          />
+          <View style={styles.modalButtonsContainer}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                setLoseModalVisible(!loseModalVisible);
+                setShowResult(false);
+                setUserChoice("");
+              }}
+            >
+              <Image
+                source={require("../../assets/images/button_tryAgain.png")}
+                style={styles.buttonImageLarge}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                setLoseModalVisible(!loseModalVisible);
+                setShowResult(false);
+                setUserChoice("");
+                router.push("/(home)");
+              }}
+            >
+              <Image
+                source={require("../../assets/images/button_mainMenu.png")}
+                style={styles.buttonImageLarge}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
         
-              {/* Win Modal */}
-              <Modal
-                animationType="slide"
-                transparent={true}
-                visible={winModalVisible}
-                onRequestClose={() => {
-                  setWinModalVisible(!winModalVisible);
-                }}
-              >
-                <View style={styles.modalView}>
-                  <Text style={styles.modalText}>Hooray! Victory is yours!</Text>
-                  <Image
-                    source={require("../../assets/images/emoji_win.png")}
-                    style={styles.modalImage}
-                  />
-                  <View style={styles.modalButtonsContainer}>
-                    <TouchableOpacity
-                      style={styles.button}
-                      onPress={() => {
-                        setWinModalVisible(!winModalVisible);
-                        setShowResult(false);
-                        setUserChoice("");
-                      }}
-                    >
-                      <Image
-                        source={require("../../assets/images/button_tryagain.png")}
-                        style={styles.buttonImageLarge}
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.button}
-                      onPress={() => router.push("/mainmenu")}
-                    >
-                      <Image
-                        source={require("../../assets/images/button_mainmenu.png")}
-                        style={styles.buttonImageLarge}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </Modal>
+      {/* Win Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={winModalVisible}
+        onRequestClose={() => {
+          setWinModalVisible(!winModalVisible);
+        }}
+      >
+        <View style={styles.modalView}>
+          <Text style={styles.modalText}>Hooray! Victory is yours!</Text>
+          <Image
+            source={require("../../assets/images/emoji_win.png")}
+            style={styles.modalImage}
+          />
+          <View style={styles.modalButtonsContainer}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                setWinModalVisible(!winModalVisible);
+                setShowResult(false);
+                setUserChoice("");
+              }}
+            >
+              <Image
+                source={require("../../assets/images/button_tryAgain.png")}
+                style={styles.buttonImageLarge}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                setWinModalVisible(!winModalVisible);
+                setShowResult(false);
+                setUserChoice("");
+                router.push("/(home)");
+              }}
+            >
+              <Image
+                source={require("../../assets/images/button_mainMenu.png")}
+                style={styles.buttonImageLarge}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      
+      {/* Draw Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={drawModalVisible}
+        onRequestClose={() => {
+          setDrawModalVisible(!drawModalVisible);
+        }}
+      >
+        <View style={styles.modalView}>
+          <Text style={styles.modalText}>Well, it's a draw!</Text>
+          <Image
+            source={require("../../assets/images/emoji_draw.png")}
+            style={styles.modalImage}
+          />
+          <View style={styles.modalButtonsContainer}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                setDrawModalVisible(!drawModalVisible);
+                setShowResult(false);
+                setUserChoice("");
+              }}
+            >
+              <Image
+                source={require("../../assets/images/button_tryAgain.png")}
+                style={styles.buttonImageLarge}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                setDrawModalVisible(!drawModalVisible);
+                setShowResult(false);
+                setUserChoice("");
+                router.push("/(home)");
+              }}
+            >
+              <Image
+                source={require("../../assets/images/button_mainMenu.png")}
+                style={styles.buttonImageLarge}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       </View>
     </ImageBackground>
   );
@@ -233,7 +325,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalView: {
-    margin: 20,
+    margin: 10,
+    marginTop: 120,
     backgroundColor: "white",
     borderRadius: 20,
     padding: 35,
@@ -247,6 +340,7 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center",
+    fontSize: 20,
   },
   modalImage: {
     width: 80,
@@ -256,9 +350,9 @@ const styles = StyleSheet.create({
   modalButtonsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: "100%",
-    paddingHorizontal: 20,
-    marginTop: 20,
+    width: "120%",
+    paddingHorizontal: 10,
+    marginTop: 10,
   },
   button: {
     flex: 1,
