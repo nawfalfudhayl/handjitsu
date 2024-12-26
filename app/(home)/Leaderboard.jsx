@@ -34,8 +34,8 @@ const LeaderboardScreen = () => {
           <Text style={styles.rankText}>{index + 1}</Text>
         </View>
         <View style={styles.info}>
-          <Text style={styles.name}>User {item.user_id}</Text>
-          <Text style={styles.wins}>{item.winrate} wins</Text>
+          <Text style={styles.name}> {item.username}</Text>
+          <Text style={styles.wins}>{item.winrate_text} win</Text>
         </View>
         {trophyIcon && <Image source={trophyIcon} style={styles.trophyIcon} />}
       </View>

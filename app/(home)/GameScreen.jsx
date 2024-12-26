@@ -1,92 +1,138 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, ImageBackground, Modal } from "react-native";
-import { router, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const choices = ["Scissors", "Rock", "Paper"];
+const choices = ["scissors", "rock", "paper"];
 
 const imagesUser = {
-  Rock: require('../../assets/images/hand-gesture-rock-yellow.png'),
-  Paper: require('../../assets/images/hand-gesture-paper-yellow.png'),
-  Scissors: require('../../assets/images/hand-gesture-scissors-yellow.png'),
+  rock: require('../../assets/images/hand-gesture-rock-yellow.png'),
+  paper: require('../../assets/images/hand-gesture-paper-yellow.png'),
+  scissors: require('../../assets/images/hand-gesture-scissors-yellow.png'),
 };
 
 const imagesBot = {
-  Rock: require('../../assets/images/hand-gesture-rock.png'),
-  Paper: require('../../assets/images/hand-gesture-paper.png'),
-  Scissors: require('../../assets/images/hand-gesture-scissors.png'),
+  rock: require('../../assets/images/hand-gesture-rock.png'),
+  paper: require('../../assets/images/hand-gesture-paper.png'),
+  scissors: require('../../assets/images/hand-gesture-scissors.png'),
 };
 
-const sendUserChoice = async (choice) => {
+const fetchPlayerProfile = async () => {
   try {
+    const token = await AsyncStorage.getItem("token");
+    const response = await axios.get("https://handjitsu-api.vercel.app/profile", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log("Fetched Player Profile:", response.data);
+    return response.data.data.id; // Assuming the ID is under data.id
+  } catch (error) {
+    console.error("Error fetching player profile:", error);
+    return null;
+  }
+};
+
+const createGameRoom = async (player1ID) => {
+  try {
+    console.log("Creating game room with Player1ID:", player1ID);
+    const response = await axios.post("https://handjitsu-api.vercel.app/games/singleplayer", {
+      Player1ID: player1ID,
+    });
+    console.log("Game room created:", response.data);
+    return response.data.data.GameID;
+  } catch (error) {
+    console.error("Error creating game room:", error);
+    return null;
+  }
+};
+
+const sendUserChoice = async (gameID, choice) => {
+  try {
+    console.log(`Sending user choice: ${choice} for gameID: ${gameID}`);
     const response = await axios.put(
-      "https://handjitsu-api.vercel.app/games/16",
+      `https://handjitsu-api.vercel.app/games/${gameID}`,
       { Player1_choice: choice },
       {
         headers: {
-          "Content-Type":"application/json", 
+          "Content-Type": "application/json",
         },
       }
     );
-
-    console.log("API Response:", response.data);
-    return response.data;
-  } catch (error){
-      console.error("error connecting to API:", error);
-      return null;
-    }
-};
-
-const getResult = (userChoice, botChoice) => {
-  if (userChoice === botChoice) return "Draw";
-  if (
-    (userChoice === "Scissors" && botChoice === "Paper") ||
-    (userChoice === "Rock" && botChoice === "Scissors") ||
-    (userChoice === "Paper" && botChoice === "Rock")
-  )
-    return "Win";
-  return "Lose";
+    console.log("API Response Data:", response.data);
+    return response.data.data; // Access the nested data object
+  } catch (error) {
+    console.error("Error connecting to API:", error);
+    console.error("Error details:", error.response ? error.response.data : error.message);
+    return null;
+  }
 };
 
 const GameScreen = () => {
-    const [userChoice, setUserChoice] = useState("");
-    const [botChoice, setBotChoice] = useState("");
-    const [result, setResult] = useState("");
-    const [showResult, setShowResult] = useState(false);
-    const [loseModalVisible, setLoseModalVisible] = useState(false);
-    const [winModalVisible, setWinModalVisible] = useState(false);
-    const [drawModalVisible, setDrawModalVisible] = useState(false);
-    const router = useRouter();
+  const [gameID, setGameID] = useState(null);
+  const [player1ID, setPlayer1ID] = useState(null);
+  const [userChoice, setUserChoice] = useState("");
+  const [botChoice, setBotChoice] = useState("");
+  const [result, setResult] = useState("");
+  const [showResult, setShowResult] = useState(false);
+  const [loseModalVisible, setLoseModalVisible] = useState(false);
+  const [winModalVisible, setWinModalVisible] = useState(false);
+  const [drawModalVisible, setDrawModalVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
-  const playGame = async (choice) => {
-    setUserChoice(choice);
-
+  const initializeGame = async () => {
     try {
-      const apiResponse = await sendUserChoice(choice);
-
-      if (apiResponse){
-        const Player1_choice = apiResponse.Player1_choice;
-        setBotChoice("Waiting for bot response...");
-        setResult(`Player 1 chose: ${Player1_choice}`);
-        setShowResult(true);
+      const player1ID = await fetchPlayerProfile();
+      if (player1ID) {
+        setPlayer1ID(player1ID);
+        const gameID = await createGameRoom(player1ID);
+        setGameID(gameID);
+        setIsLoading(false);
       }
     } catch (error) {
-      console.error("Error in playgame:", error);
+      console.error("Error initializing game:", error);
     }
   };
 
-  const displayResult = () => {
-    const botRandomChoice = choices[Math.floor(Math.random() * choices.length)];
-    setBotChoice(botRandomChoice);
-    const gameResult = getResult(userChoice, botRandomChoice);
-    setResult(gameResult);
-    setShowResult(true);
-    if (gameResult === "Lose") {
-      setLoseModalVisible(true);
-    } else if (gameResult === "Win") {
-      setWinModalVisible(true);
-    } else if (gameResult === "Draw"){
-      setDrawModalVisible(true);
+  useEffect(() => {
+    initializeGame();
+  }, []);
+
+  const playGame = async (choice) => {
+    if (!gameID) {
+      console.error("Game not initialized yet");
+      return;
+    }
+
+    setUserChoice(choice);
+    setIsLoading(true);
+
+    try {
+      const apiResponse = await sendUserChoice(gameID, choice);
+      if (apiResponse) {
+        const { Player2_choice, WinnerID } = apiResponse;
+        setBotChoice(Player2_choice);
+        const gameResult = parseInt(WinnerID) === parseInt(player1ID) ? "Win" : 
+                          parseInt(WinnerID) === 0 ? "Draw" : "Lose";
+        setResult(gameResult);
+
+        setTimeout(() => {
+          setShowResult(true);
+          if (gameResult === "Lose") {
+            setLoseModalVisible(true);
+          } else if (gameResult === "Win") {
+            setWinModalVisible(true);
+          } else if (gameResult === "Draw") {
+            setDrawModalVisible(true);
+          }
+        }, 2000);
+      }
+    } catch (error) {
+      console.error("Error playing game:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -94,179 +140,188 @@ const GameScreen = () => {
     <ImageBackground source={require('../../assets/images/spaceroom_bg.png')} style={styles.background}>
       <View style={styles.container}>
         <View style={styles.handsContainer}>
-          <Image source={botChoice ? imagesBot[botChoice] : null} style={styles.botHand} resizeMode="contain" />
+          <Image
+            source={botChoice ? imagesBot[botChoice] : null}
+            style={styles.botHand}
+            resizeMode="contain"
+          />
         </View>
         <View style={styles.handsContainer}>
-          <Image source={userChoice ? imagesUser[userChoice] : null} style={styles.userHand} resizeMode="contain" />
+          {userChoice ? (
+            <Image source={imagesUser[userChoice]} style={styles.userHand} resizeMode="contain" />
+          ) : (
+            <Text>Make your choice</Text>
+          )}
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={() => playGame("Rock")} style={styles.choiceButton}>
+          <TouchableOpacity onPress={() => playGame("rock")} style={styles.choiceButton} disabled={isLoading || !gameID}>
             <Image source={require('../../assets/images/button_rock.png')} style={styles.choiceImage} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => playGame("Paper")} style={styles.choiceButton}>
+          <TouchableOpacity onPress={() => playGame("paper")} style={styles.choiceButton} disabled={isLoading || !gameID}>
             <Image source={require('../../assets/images/button_paper.png')} style={styles.choiceImage} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => playGame("Scissors")} style={styles.choiceButton}>
+          <TouchableOpacity onPress={() => playGame("scissors")} style={styles.choiceButton} disabled={isLoading || !gameID}>
             <Image source={require('../../assets/images/button_scissors.png')} style={styles.choiceImage} />
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity
-           onPress={userChoice ? displayResult : null}
-          style={styles.resultButton}
-           >
-            <Image
-                source={
-                 userChoice
-                    ? require("../../assets/images/button_result_active.png")
-                    : require("../../assets/images/button_result_disabled.png")
-                }
-              style={styles.resultButtonImage}
-            />
-            </TouchableOpacity>
+        {showResult && (
+          <View style={styles.resultContainer}>
+            <Text>{result}</Text>
+          </View>
+        )}
 
         {/* Lose Modal */}
         <Modal
-        animationType="slide"
-        transparent={true}
-        visible={loseModalVisible}
-        onRequestClose={() => {
-          setLoseModalVisible(!loseModalVisible);
-        }}
-      >
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>
-            Nice try! Let's see if you can beat it next time!
-          </Text>
-          <Image
-            source={require("../../assets/images/emoji_lose.png")}
-            style={styles.modalImage}
-          />
-          <View style={styles.modalButtonsContainer}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                setLoseModalVisible(!loseModalVisible);
-                setShowResult(false);
-                setUserChoice("");
-              }}
-            >
-              <Image
-                source={require("../../assets/images/button_tryAgain.png")}
-                style={styles.buttonImageLarge}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                setLoseModalVisible(!loseModalVisible);
-                setShowResult(false);
-                setUserChoice("");
-                router.push("/(home)");
-              }}
-            >
-              <Image
-                source={require("../../assets/images/button_mainMenu.png")}
-                style={styles.buttonImageLarge}
-              />
-            </TouchableOpacity>
+          animationType="slide"
+          transparent={true}
+          visible={loseModalVisible}
+          onRequestClose={() => {
+            setLoseModalVisible(!loseModalVisible);
+          }}
+        >
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>
+              Nice try! Let's see if you can beat it next time!
+            </Text>
+            <Image
+              source={require("../../assets/images/emoji_lose.png")}
+              style={styles.modalImage}
+            />
+            <View style={styles.modalButtonsContainer}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={async () => {
+                  setLoseModalVisible(!loseModalVisible);
+                  setShowResult(false);
+                  setUserChoice("");
+                  setBotChoice("");
+                  await initializeGame();
+                }}
+              >
+                <Image
+                  source={require("../../assets/images/button_tryAgain.png")}
+                  style={styles.buttonImageLarge}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  setLoseModalVisible(!loseModalVisible);
+                  setShowResult(false);
+                  setUserChoice("");
+                  setBotChoice("");
+                  router.push("/(home)");
+                }}
+              >
+                <Image
+                  source={require("../../assets/images/button_mainMenu.png")}
+                  style={styles.buttonImageLarge}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </Modal>
-        
-      {/* Win Modal */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={winModalVisible}
-        onRequestClose={() => {
-          setWinModalVisible(!winModalVisible);
-        }}
-      >
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>Hooray! Victory is yours!</Text>
-          <Image
-            source={require("../../assets/images/emoji_win.png")}
-            style={styles.modalImage}
-          />
-          <View style={styles.modalButtonsContainer}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                setWinModalVisible(!winModalVisible);
-                setShowResult(false);
-                setUserChoice("");
-              }}
-            >
-              <Image
-                source={require("../../assets/images/button_tryAgain.png")}
-                style={styles.buttonImageLarge}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                setWinModalVisible(!winModalVisible);
-                setShowResult(false);
-                setUserChoice("");
-                router.push("/(home)");
-              }}
-            >
-              <Image
-                source={require("../../assets/images/button_mainMenu.png")}
-                style={styles.buttonImageLarge}
-              />
-            </TouchableOpacity>
+        </Modal>
+
+        {/* Win Modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={winModalVisible}
+          onRequestClose={() => {
+            setWinModalVisible(!winModalVisible);
+          }}
+        >
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Hooray! Victory is yours!</Text>
+            <Image
+              source={require("../../assets/images/emoji_win.png")}
+              style={styles.modalImage}
+            />
+            <View style={styles.modalButtonsContainer}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={async () => {
+                  setWinModalVisible(!winModalVisible);
+                  setShowResult(false);
+                  setUserChoice("");
+                  setBotChoice("");
+                  await initializeGame();
+                }}
+              >
+                <Image
+                  source={require("../../assets/images/button_tryAgain.png")}
+                  style={styles.buttonImageLarge}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  setWinModalVisible(!winModalVisible);
+                  setShowResult(false);
+                  setUserChoice("");
+                  setBotChoice("");
+                  router.push("/(home)");
+                }}
+              >
+                <Image
+                  source={require("../../assets/images/button_mainMenu.png")}
+                  style={styles.buttonImageLarge}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </Modal>
-      
-      {/* Draw Modal */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={drawModalVisible}
-        onRequestClose={() => {
-          setDrawModalVisible(!drawModalVisible);
-        }}
-      >
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>Well, it's a draw!</Text>
-          <Image
-            source={require("../../assets/images/emoji_draw.png")}
-            style={styles.modalImage}
-          />
-          <View style={styles.modalButtonsContainer}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                setDrawModalVisible(!drawModalVisible);
-                setShowResult(false);
-                setUserChoice("");
-              }}
-            >
-              <Image
-                source={require("../../assets/images/button_tryAgain.png")}
-                style={styles.buttonImageLarge}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                setDrawModalVisible(!drawModalVisible);
-                setShowResult(false);
-                setUserChoice("");
-                router.push("/(home)");
-              }}
-            >
-              <Image
-                source={require("../../assets/images/button_mainMenu.png")}
-                style={styles.buttonImageLarge}
-              />
-            </TouchableOpacity>
+        </Modal>
+
+        {/* Draw Modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={drawModalVisible}
+          onRequestClose={() => {
+            setDrawModalVisible(!drawModalVisible);
+          }}
+        >
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Well, it's a draw!</Text>
+            <Image
+              source={require("../../assets/images/emoji_draw.png")}
+              style={styles.modalImage}
+            />
+            <View style={styles.modalButtonsContainer}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={async () => {
+                  setDrawModalVisible(!drawModalVisible);
+                  setShowResult(false);
+                  setUserChoice("");
+                  setBotChoice("");
+                  await initializeGame();
+                }}
+              >
+                <Image
+                  source={require("../../assets/images/button_tryAgain.png")}
+                  style={styles.buttonImageLarge}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  setDrawModalVisible(!drawModalVisible);
+                  setShowResult(false);
+                  setUserChoice("");
+                  setBotChoice("");
+                  router.push("/(home)");
+                }}
+              >
+                <Image
+                  source={require("../../assets/images/button_mainMenu.png")}
+                  style={styles.buttonImageLarge}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
       </View>
     </ImageBackground>
   );
