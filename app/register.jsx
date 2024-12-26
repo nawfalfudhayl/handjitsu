@@ -44,14 +44,14 @@ const RegisterScreen = ({ navigation }) => {
         password: form.password,
       });
 
-      Alert.alert("Sukses", "Pendaftaran berhasil! Silakan login.");
+      Alert.alert("Success", "Registration successful! Please log in.");
       router.replace("/");
     } catch (error) {
       if (error.response) {
-        Alert.alert("Gagal", `Pendaftaran gagal: ${error.response.data.error}`);
+        Alert.alert("Failed", `Registration was unsuccessful: ${error.response.data.error}`);
       } 
       else {
-        Alert.alert("Gagal", "Terjadi kesalahan jaringan. Silakan coba lagi.");
+        Alert.alert("Failed", "A network error occurred. Please try again.");
       }
     } finally {
       setIsRegistering(false);
@@ -65,7 +65,7 @@ const RegisterScreen = ({ navigation }) => {
         <Text style={{ padding: 8 }}>Username</Text>
         <TextInput
           style={styles.input}
-          placeholder="Masukkan Username Anda"
+          placeholder="Input Your Username"
           value={username}
           onChangeText={(text) => setUsername(text)}
         />
@@ -73,7 +73,7 @@ const RegisterScreen = ({ navigation }) => {
         <Text style={{ padding: 8 }}>Email</Text>
         <TextInput
           style={styles.input}
-          placeholder="contoh@gmail.com"
+          placeholder="example@gmail.com"
           value={form.email}
           keyboardType="email-address"
           onChangeText={(text) => handleInputChange("email", text)}
@@ -82,7 +82,7 @@ const RegisterScreen = ({ navigation }) => {
         <Text style={{ padding: 8 }}>Password</Text>
         <TextInput
           style={styles.input}
-          placeholder="Masukkan Password Anda"
+          placeholder="Input Your Password"
           value={form.password}
           secureTextEntry={true}
           onChangeText={(text) => handleInputChange("password", text)}
