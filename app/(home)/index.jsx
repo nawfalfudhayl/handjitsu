@@ -1,22 +1,22 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, ImageBackground, Image, Text } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { Link } from 'expo-router';
 import { useRouter } from 'expo-router';
 
 const MainMenuScreen = ({ navigation }) => {
   const router = useRouter();
+  
   return (
     <ImageBackground source={require('../../assets/images/homescreen_bg.png')} style={styles.background}>
       <View style={styles.container}>
+      <TouchableOpacity style={styles.logoutButton} onPress={() => router.push("/")}>
+          <Image source={require('../../assets/images/logo_logout.png')} style={styles.logoutImage} />
+        </TouchableOpacity>
         <Image source={require('../../assets/images/title.png')} style={styles.titleImage} />
         <Image source={require('../../assets/images/logo_HandJitsu.png')} style={styles.icons} />
         <View>
           <TouchableOpacity onPress={() => router.push("/GameScreen")} style={styles.button}>
             <Image source={require('../../assets/images/button_singleplayer.png')} style={styles.buttonImage} resizeMode="contain" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Image source={require('../../assets/images/button_multiplayer.png')} style={styles.buttonImage} resizeMode="contain" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => router.push("/Leaderboard")} style={styles.button}>
             <Image source={require('../../assets/images/button_leaderboard.png')} style={styles.buttonImage} resizeMode="contain" />
@@ -66,9 +66,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'black',
   },
-  signout: {
-    alignItems: 'flex-end'
-  }
+  logoutButton: {
+    position: 'absolute', 
+    top: 63, 
+    right: 30,
+    zIndex: 1 
+  },
+  logoutImage: {
+    width: 36, 
+    height: 36, 
+  },
 });
 
 export default MainMenuScreen;
