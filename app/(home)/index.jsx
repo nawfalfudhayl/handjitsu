@@ -11,50 +11,20 @@ import { StatusBar } from "expo-status-bar";
 import { Link, useRouter } from "expo-router";
 
 const MainMenuScreen = ({ navigation }) => {
-  const router = useRouter();
-  return (
-    <ImageBackground
-      source={require("../../assets/images/homescreen_bg.png")}
-      style={styles.background}
-    >
+  const router = useRouter();  return (
+    <ImageBackground source={require('../../assets/images/homescreen_bg.png')} style={styles.background}>
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => router.push("/logout")}>
-          <Image
-            source={require("../../assets/images/majesticons_logout.png")}
-            style={styles.logoutImage}
-          />
+      <TouchableOpacity style={styles.logoutButton} onPress={() => router.replace('/')}>
+          <Image source={require('../../assets/images/logo_logout.png')} style={styles.logoutImage} />
         </TouchableOpacity>
-        <Image
-          source={require("../../assets/images/title.png")}
-          style={styles.titleImage}
-        />
-        <Image
-          source={require("../../assets/images/logo_HandJitsu.png")}
-          style={styles.icons}
-        />
+        <Image source={require('../../assets/images/title.png')} style={styles.titleImage} />
+        <Image source={require('../../assets/images/logo_HandJitsu.png')} style={styles.icons} />
         <View>
-          <Link href="/GameScreen" style={styles.button}>
-            <Image
-              source={require("../../assets/images/button_singleplayer.png")}
-              style={styles.buttonImage}
-              resizeMode="contain"
-            />
-          </Link>
-          {/* <TouchableOpacity style={styles.button}>
-            <Image
-              source={require("../../assets/images/button_multiplayer.png")}
-              style={styles.buttonImage}
-              resizeMode="contain"
-            />
-          </TouchableOpacity> */}
-          <TouchableOpacity style={styles.button}>
-            <Link href="/Leaderboard" style={styles.button}>
-              <Image
-                source={require("../../assets/images/button_leaderboard.png")}
-                style={styles.buttonImage}
-                resizeMode="contain"
-              />
-            </Link>
+          <TouchableOpacity onPress={() => router.push("/GameScreen")} style={styles.button}>
+            <Image source={require('../../assets/images/button_singleplayer.png')} style={styles.buttonImage} resizeMode="contain" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/Leaderboard")} style={styles.button}>
+            <Image source={require('../../assets/images/button_leaderboard.png')} style={styles.buttonImage} resizeMode="contain" />
           </TouchableOpacity>
         </View>
       </View>

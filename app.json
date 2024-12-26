@@ -1,30 +1,31 @@
 {
   "expo": {
-    "name": "walled-mobile",
-    "slug": "walled-mobile",
+    "name": "handJitsu",
+    "slug": "handJitsu",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/logo.png",
+      "image": "./assets/images/logoSplash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "width": 800, 
+      "height": 800,
+    "foregroundImage":"./assets/images/background.png",
+    "backgroundColor": "#8376E5"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/background.png",
+        "backgroundColor": "#8376E5"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/images/favicon.png"
     },
-    "main": "expo-router/entry", 
     "plugins": [
       "expo-router"
     ]
