@@ -9,7 +9,7 @@ const MainMenuScreen = ({ navigation }) => {
   return (
     <ImageBackground source={require('../../assets/images/homescreen_bg.png')} style={styles.background}>
       <View style={styles.container}>
-      <TouchableOpacity style={styles.logoutButton} onPress={() => router.replace('/')}>
+      <TouchableOpacity style={styles.logoutButton} onPress={() => router.replace('/logout')}>
           <Image source={require('../../assets/images/logo_logout.png')} style={styles.logoutImage} />
         </TouchableOpacity>
         <Image source={require('../../assets/images/title.png')} style={styles.titleImage} />
