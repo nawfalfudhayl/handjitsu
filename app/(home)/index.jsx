@@ -2,24 +2,24 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity, ImageBackground, Image, Text } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 
 const MainMenuScreen = ({ navigation }) => {
+  const router = useRouter();
   return (
     <ImageBackground source={require('../../assets/images/homescreen_bg.png')} style={styles.background}>
       <View style={styles.container}>
         <Image source={require('../../assets/images/title.png')} style={styles.titleImage} />
         <Image source={require('../../assets/images/logo_HandJitsu.png')} style={styles.icons} />
         <View>
-          <Link href = "/GameScreen" style={styles.button}>
+          <TouchableOpacity onPress={() => router.push("/GameScreen")} style={styles.button}>
             <Image source={require('../../assets/images/button_singleplayer.png')} style={styles.buttonImage} resizeMode="contain" />
-          </Link>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.button}>
             <Image source={require('../../assets/images/button_multiplayer.png')} style={styles.buttonImage} resizeMode="contain" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-          <Link href="/Leaderboard" style={styles.button}>
+          <TouchableOpacity onPress={() => router.push("/Leaderboard")} style={styles.button}>
             <Image source={require('../../assets/images/button_leaderboard.png')} style={styles.buttonImage} resizeMode="contain" />
-          </Link>
           </TouchableOpacity>
         </View>
       </View>

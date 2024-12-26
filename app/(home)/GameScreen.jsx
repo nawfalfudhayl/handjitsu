@@ -139,6 +139,12 @@ const GameScreen = () => {
   return (
     <ImageBackground source={require('../../assets/images/spaceroom_bg.png')} style={styles.background}>
       <View style={styles.container}>
+        <TouchableOpacity onPress={() => router.push("/(home)")} style={styles.backButton}>
+          <Image 
+            source={require('../../assets/images/back_arrow.png')}
+            style={styles.backButtonImage} 
+          />
+        </TouchableOpacity>
         <View style={styles.handsContainer}>
           <Image
             source={botChoice ? imagesBot[botChoice] : null}
@@ -422,6 +428,16 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 80,
     resizeMode: "contain",
+  },
+  backButton: {
+    position: 'absolute',
+    top: 64,
+    left: 10,
+  },
+  backButtonImage: {
+    width: 36,
+    height: 36, 
+    resizeMode: 'contain', 
   },
 });
 
