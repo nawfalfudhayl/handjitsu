@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, ImageBackground, TouchableOpacity } from 'react-native';
 import axios from 'axios';
+import { useRouter } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 
 const LeaderboardScreen = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchLeaderboardData = async () => {
@@ -34,7 +37,7 @@ const LeaderboardScreen = () => {
           <Text style={styles.rankText}>{index + 1}</Text>
         </View>
         <View style={styles.info}>
-          <Text style={styles.name}> {item.username}</Text>
+          <Text style={styles.name}>{item.username}</Text>
           <Text style={styles.wins}>{item.winrate_text} win</Text>
         </View>
         {trophyIcon && <Image source={trophyIcon} style={styles.trophyIcon} />}
@@ -47,7 +50,16 @@ const LeaderboardScreen = () => {
       source={require('../../assets/images/leaderboard_bg.png')}
       style={styles.background}
     >
+      <View style={styles.container}>
+        <View style = {styles.leaderboardContainer}>
+      <TouchableOpacity onPress={() => router.push("/(home)")}>
+        <Image 
+          source={require('../../assets/images/button-back-white.png')}
+          style={styles.backButtonImage} 
+        />
+      </TouchableOpacity>
       <Text style={styles.title}>Leaderboard HandJitsu</Text>
+      </View>
       <FlatList
         data={leaderboardData}
         renderItem={renderItem}
@@ -55,11 +67,18 @@ const LeaderboardScreen = () => {
         contentContainerStyle={styles.listContainer}
         style={styles.leaderboard}
       />
+      </View>
+      <StatusBar style="auto" />
     </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  container:{
+    flex: 1,
+    marginTop: 30,
+    width: "100%"
+  },
   background: {
     flex: 1,
     resizeMode: 'cover',
@@ -67,10 +86,10 @@ const styles = StyleSheet.create({
     paddingVertical: 40,
   },
   title: {
+    flexGrow: 1,             
+    textAlign: 'center',      
     fontSize: 24,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
     color: '#FFFFFF',
   },
   listContainer: {
@@ -83,6 +102,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginBottom: 10,
     borderRadius: 12,
+    elevation: 3,
   },
   firstPlace: {
     borderWidth: 2,
@@ -120,9 +140,20 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   leaderboard: {
-    backgroundColor: 'EFEEFC',
+    backgroundColor: '#EFEEFC',
     borderRadius: 20,
-    padding: 16
+    padding: 16,
+  },
+  backButtonImage: {
+    width: 36,
+    height: 36, 
+    resizeMode: 'contain', 
+  },
+  leaderboardContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start', 
+    marginBottom: 20
   }
 });
 

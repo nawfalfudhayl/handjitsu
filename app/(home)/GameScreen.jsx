@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet, ImageBackground, Modal } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  ImageBackground,
+  Modal,
+} from "react-native";
 import { useRouter } from "expo-router";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -7,27 +15,30 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const choices = ["scissors", "rock", "paper"];
 
 const imagesUser = {
-  rock: require('../../assets/images/hand-gesture-rock-yellow.png'),
-  paper: require('../../assets/images/hand-gesture-paper-yellow.png'),
-  scissors: require('../../assets/images/hand-gesture-scissors-yellow.png'),
+  rock: require("../../assets/images/hand-gesture-rock-yellow.png"),
+  paper: require("../../assets/images/hand-gesture-paper-yellow.png"),
+  scissors: require("../../assets/images/hand-gesture-scissors-yellow.png"),
 };
 
 const imagesBot = {
-  rock: require('../../assets/images/hand-gesture-rock.png'),
-  paper: require('../../assets/images/hand-gesture-paper.png'),
-  scissors: require('../../assets/images/hand-gesture-scissors.png'),
+  rock: require("../../assets/images/hand-gesture-rock.png"),
+  paper: require("../../assets/images/hand-gesture-paper.png"),
+  scissors: require("../../assets/images/hand-gesture-scissors.png"),
 };
 
 const fetchPlayerProfile = async () => {
   try {
     const token = await AsyncStorage.getItem("token");
-    const response = await axios.get("https://handjitsu-api.vercel.app/profile", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.get(
+      "https://handjitsu-api.vercel.app/profile",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     console.log("Fetched Player Profile:", response.data);
-    return response.data.data.id; 
+    return response.data.data.id;
   } catch (error) {
     console.error("Error fetching player profile:", error);
     return null;
@@ -37,9 +48,12 @@ const fetchPlayerProfile = async () => {
 const createGameRoom = async (player1ID) => {
   try {
     console.log("Creating game room with Player1ID:", player1ID);
-    const response = await axios.post("https://handjitsu-api.vercel.app/games/singleplayer", {
-      Player1ID: player1ID,
-    });
+    const response = await axios.post(
+      "https://handjitsu-api.vercel.app/games/singleplayer",
+      {
+        Player1ID: player1ID,
+      }
+    );
     console.log("Game room created:", response.data);
     return response.data.data.GameID;
   } catch (error) {
@@ -61,10 +75,13 @@ const sendUserChoice = async (gameID, choice) => {
       }
     );
     console.log("API Response Data:", response.data);
-    return response.data.data; 
+    return response.data.data;
   } catch (error) {
     console.error("Error connecting to API:", error);
-    console.error("Error details:", error.response ? error.response.data : error.message);
+    console.error(
+      "Error details:",
+      error.response ? error.response.data : error.message
+    );
     return null;
   }
 };
@@ -114,8 +131,12 @@ const GameScreen = () => {
       if (apiResponse) {
         const { Player2_choice, WinnerID } = apiResponse;
         setBotChoice(Player2_choice);
-        const gameResult = parseInt(WinnerID) === parseInt(player1ID) ? "Win" : 
-                          parseInt(WinnerID) === 0 ? "Draw" : "Lose";
+        const gameResult =
+          parseInt(WinnerID) === parseInt(player1ID)
+            ? "Win"
+            : parseInt(WinnerID) === 0
+            ? "Draw"
+            : "Lose";
         setResult(gameResult);
 
         setTimeout(() => {
@@ -137,8 +158,20 @@ const GameScreen = () => {
   };
 
   return (
-    <ImageBackground source={require('../../assets/images/spaceroom_bg.png')} style={styles.background}>
+    <ImageBackground
+      source={require("../../assets/images/spaceroom_bg.png")}
+      style={styles.background}
+    >
       <View style={styles.container}>
+        <TouchableOpacity
+          onPress={() => router.push("/(home)")}
+          style={styles.backButton}
+        >
+          <Image
+            source={require("../../assets/images/back_arrow.png")}
+            style={styles.backButtonImage}
+          />
+        </TouchableOpacity>
         <View style={styles.handsContainer}>
           <Image
             source={botChoice ? imagesBot[botChoice] : null}
@@ -148,20 +181,45 @@ const GameScreen = () => {
         </View>
         <View style={styles.handsContainer}>
           {userChoice ? (
-            <Image source={imagesUser[userChoice]} style={styles.userHand} resizeMode="contain" />
+            <Image
+              source={imagesUser[userChoice]}
+              style={styles.userHand}
+              resizeMode="contain"
+            />
           ) : (
             <Text></Text>
           )}
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={() => playGame("rock")} style={styles.choiceButton} disabled={isLoading || !gameID}>
-            <Image source={require('../../assets/images/button_rock.png')} style={styles.choiceImage} />
+          <TouchableOpacity
+            onPress={() => playGame("rock")}
+            style={styles.choiceButton}
+            disabled={isLoading || !gameID}
+          >
+            <Image
+              source={require("../../assets/images/button_rock.png")}
+              style={styles.choiceImage}
+            />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => playGame("paper")} style={styles.choiceButton} disabled={isLoading || !gameID}>
-            <Image source={require('../../assets/images/button_paper.png')} style={styles.choiceImage} />
+          <TouchableOpacity
+            onPress={() => playGame("paper")}
+            style={styles.choiceButton}
+            disabled={isLoading || !gameID}
+          >
+            <Image
+              source={require("../../assets/images/button_paper.png")}
+              style={styles.choiceImage}
+            />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => playGame("scissors")} style={styles.choiceButton} disabled={isLoading || !gameID}>
-            <Image source={require('../../assets/images/button_scissors.png')} style={styles.choiceImage} />
+          <TouchableOpacity
+            onPress={() => playGame("scissors")}
+            style={styles.choiceButton}
+            disabled={isLoading || !gameID}
+          >
+            <Image
+              source={require("../../assets/images/button_scissors.png")}
+              style={styles.choiceImage}
+            />
           </TouchableOpacity>
         </View>
 
@@ -328,21 +386,21 @@ const GameScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  background: { 
+  background: {
     flex: 1,
     resizeMode: "cover",
     justifyContent: "center",
     alignItems: "center",
   },
-  container: { 
-    flex: 1, 
-    justifyContent: "space-between", 
+  container: {
+    flex: 1,
+    justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 20,
   },
-  handsContainer: { 
-    flex: 1, 
-    justifyContent: "center", 
+  handsContainer: {
+    flex: 1,
+    justifyContent: "center",
     alignItems: "center",
   },
   botHand: {
@@ -354,29 +412,29 @@ const styles = StyleSheet.create({
     width: 141,
     height: 189.38,
   },
-  buttonContainer: { 
-    flexDirection: "row", 
+  buttonContainer: {
+    flexDirection: "row",
     justifyContent: "space-around",
     marginBottom: 10,
   },
-  choiceButton: { 
+  choiceButton: {
     marginHorizontal: 15,
   },
   choiceImage: {
-    width: 90, 
-    height: 90, 
+    width: 90,
+    height: 90,
   },
-  resultButton: { 
+  resultButton: {
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
     marginBottom: 20,
   },
-  resultButtonImage: { 
+  resultButtonImage: {
     width: 348,
     height: 65.5,
   },
-  resultContainer: { 
+  resultContainer: {
     alignItems: "center",
   },
   modalView: {
@@ -421,6 +479,16 @@ const styles = StyleSheet.create({
   buttonImageLarge: {
     width: "100%",
     height: 80,
+    resizeMode: "contain",
+  },
+  backButton: {
+    position: "absolute",
+    top: 64,
+    left: 10,
+  },
+  backButtonImage: {
+    width: 36,
+    height: 36,
     resizeMode: "contain",
   },
 });
