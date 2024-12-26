@@ -63,7 +63,7 @@ const LeaderboardScreen = () => {
       <FlatList
         data={leaderboardData}
         renderItem={renderItem}
-        keyExtractor={(item) => item.leaderboard_id}
+        keyExtractor={(item, index) => (item.leaderboard_id || index).toString()}
         contentContainerStyle={styles.listContainer}
         style={styles.leaderboard}
       />
