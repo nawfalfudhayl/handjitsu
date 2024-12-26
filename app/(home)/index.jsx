@@ -40,13 +40,13 @@ const MainMenuScreen = ({ navigation }) => {
               resizeMode="contain"
             />
           </Link>
-          <TouchableOpacity style={styles.button}>
+          {/* <TouchableOpacity style={styles.button}>
             <Image
               source={require("../../assets/images/button_multiplayer.png")}
               style={styles.buttonImage}
               resizeMode="contain"
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity style={styles.button}>
             <Link href="/Leaderboard" style={styles.button}>
               <Image
