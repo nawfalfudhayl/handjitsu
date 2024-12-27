@@ -156,7 +156,7 @@ const GameScreen = () => {
           {userChoice ? (
             <Image source={imagesUser[userChoice]} style={styles.userHand} resizeMode="contain" />
           ) : (
-            <Text>Make your choice</Text>
+            <Text></Text>
           )}
         </View>
         <View style={styles.buttonContainer}>
@@ -170,12 +170,6 @@ const GameScreen = () => {
             <Image source={require('../../assets/images/button_scissors.png')} style={styles.choiceImage} />
           </TouchableOpacity>
         </View>
-
-        {showResult && (
-          <View style={styles.resultContainer}>
-            <Text>{result}</Text>
-          </View>
-        )}
 
         {/* Lose Modal */}
         <Modal
